@@ -1,0 +1,12 @@
+{
+	"scripts": {
+		"init-layer": "npx nuxi init -t layer && echo Remember to move all the contents of the 'nuxt-layer' folder to the root of the project. Use the .nvmrc, .editorconfig, .eslintrc.cjs and .prettierrc.cjs files existing in the root, and merge in scripts and dev dependencies from the package.json from the root. && echo More info: https://docs.limbo.works/tech/creating-new-packages",
+		"prettier": "prettier \"**/*.{js,vue,md,yml,css,scss,json}\"",
+		"eslint": "eslint \"**/*.{js,vue}\"",
+		"lint": "yarn prettier --check . && yarn eslint --quiet .",
+		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet ."
+	},
+	"devDependencies": {
+		"@limbo-works/lint-configs": "^1.0.0"
+	}
+}
