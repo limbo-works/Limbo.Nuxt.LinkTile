@@ -47,7 +47,8 @@
 				</h3>
 
 				<p id="my-unique-id__description">
-					When you find yourself in the deep, it's nice with a way home.
+					When you find yourself in the deep, it's nice with a way
+					home.
 				</p>
 
 				<ul>
@@ -59,9 +60,7 @@
 					</li>
 				</ul>
 
-				<span id="my-unique-id__more">
-					Read more
-				</span>
+				<span id="my-unique-id__more"> Read more </span>
 			</div>
 		</LinkTile>
 	</div>
