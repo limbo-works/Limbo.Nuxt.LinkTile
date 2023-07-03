@@ -4,7 +4,10 @@
 		class="c-link-tile"
 		v-bind="{
 			...$attrs,
-			onClick, onMouseup, onMouseover, onMouseleave
+			onClick,
+			onMouseup,
+			onMouseover,
+			onMouseleave,
 		}"
 	>
 		<NuxtLink
@@ -15,8 +18,16 @@
 			class="c-link-tile__link"
 			:to="to"
 			v-bind="{
-				href, target, title, tabindex, download,
-				hreflang, ping, referrerpolicy, rel, type,
+				href,
+				target,
+				title,
+				tabindex,
+				download,
+				hreflang,
+				ping,
+				referrerpolicy,
+				rel,
+				type,
 				'aria-roledescription': ariaRoledescription,
 				'aria-label': ariaLabel,
 				'aria-labelledby': ariaLabelledby,
@@ -227,14 +238,10 @@ const hoverData = {
 };
 
 // A warning of missing a11y attributes if needed
-if (
-	(props.to || props.href) &&
-	!props.ariaLabel &&
-	!props.ariaLabelledby
-) {
+if ((props.to || props.href) && !props.ariaLabel && !props.ariaLabelledby) {
 	console.warn(
 		`[LinkTile - ${props.id ? '#' + props.id : 'no id'}]`,
-		"No a11y label attributes were provided. This may cause accessibility issues. Add either the 'aria-label' or 'aria-labelledby' attribute to the component, to avoid any issues."
+		'No a11y label attributes were provided. This may cause accessibility issues. Add either the \'aria-label\' or \'aria-labelledby\' attribute to the component, to avoid any issues.'
 	);
 }
 
@@ -255,29 +262,23 @@ const onClick = (e) => {
 	// Cancel if an inner button is targeted
 	if (
 		props.clickableElementsQuery &&
-		[
-			...el.querySelectorAll(
-				props.clickableElementsQuery
-			),
-		].includes(e.target)
+		[...el.querySelectorAll(props.clickableElementsQuery)].includes(
+			e.target
+		)
 	) {
 		return;
 	}
 
 	// Cancel if element should not be treated as a link
 	if (props.linkPartialsQuery) {
-		const linkPartials = [
-			...el.querySelectorAll(props.linkPartialsQuery),
-		];
+		const linkPartials = [...el.querySelectorAll(props.linkPartialsQuery)];
 		if (linkPartials.length === 0) {
 			return;
 		}
 		if (!linkPartials.includes(e.target)) {
 			let isPartial = false;
 			linkPartials.forEach((partial) => {
-				isPartial = getPath(e).includes(partial)
-					? true
-					: isPartial;
+				isPartial = getPath(e).includes(partial) ? true : isPartial;
 			});
 
 			if (!isPartial) {
@@ -293,7 +294,7 @@ const onClick = (e) => {
 	// Cancel/stop everything just to be sure
 	e.preventDefault();
 	e.stopPropagation();
-}
+};
 
 const onMouseup = (e) => {
 	attrs.onMouseup?.(e); // Run the usual event, if such is defined
@@ -311,29 +312,23 @@ const onMouseup = (e) => {
 	// Cancel if an inner button is targeted
 	if (
 		props.clickableElementsQuery &&
-		[
-			...el.querySelectorAll(
-				props.clickableElementsQuery
-			),
-		].includes(e.target)
+		[...el.querySelectorAll(props.clickableElementsQuery)].includes(
+			e.target
+		)
 	) {
 		return;
 	}
 
 	// Cancel if element should not be treated as a link
 	if (props.linkPartialsQuery) {
-		const linkPartials = [
-			...el.querySelectorAll(props.linkPartialsQuery),
-		];
+		const linkPartials = [...el.querySelectorAll(props.linkPartialsQuery)];
 		if (linkPartials.length === 0) {
 			return;
 		}
 		if (!linkPartials.includes(e.target)) {
 			let isPartial = false;
 			linkPartials.forEach((partial) => {
-				isPartial = getPath(e).includes(partial)
-					? true
-					: isPartial;
+				isPartial = getPath(e).includes(partial) ? true : isPartial;
 			});
 
 			if (!isPartial) {
@@ -349,7 +344,7 @@ const onMouseup = (e) => {
 			linkElement.value.style.pointerEvents = null;
 		});
 	}
-}
+};
 
 const onMouseover = (e) => {
 	attrs.onMouseover?.(e);
@@ -362,11 +357,9 @@ const onMouseover = (e) => {
 		// Cancel if an inner button is targeted
 		if (
 			props.clickableElementsQuery &&
-			[
-				...el.querySelectorAll(
-					props.clickableElementsQuery
-				),
-			].includes(e.target)
+			[...el.querySelectorAll(props.clickableElementsQuery)].includes(
+				e.target
+			)
 		) {
 			el.removeAttribute('data-hover');
 			if (hoverData.isHovering) {
@@ -394,9 +387,7 @@ const onMouseover = (e) => {
 			if (!linkPartials.includes(e.target)) {
 				let isPartial = false;
 				linkPartials.forEach((partial) => {
-					isPartial = getPath(e).includes(partial)
-						? true
-						: isPartial;
+					isPartial = getPath(e).includes(partial) ? true : isPartial;
 				});
 
 				if (!isPartial) {
@@ -420,7 +411,7 @@ const onMouseover = (e) => {
 			attrs.onHoverupdate?.({ ...hoverData });
 		}
 	}
-}
+};
 
 const onMouseleave = (e) => {
 	attrs.onMouseleave?.(e);
@@ -437,7 +428,7 @@ const onMouseleave = (e) => {
 			attrs.onHoverend?.({ ...hoverData });
 		}
 	}
-}
+};
 
 function getPath(event, _element = null, _path = null) {
 	const path = _path || event.path || [];

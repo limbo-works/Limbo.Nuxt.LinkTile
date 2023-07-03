@@ -2,11 +2,7 @@
 	<div>
 		Frontpage
 
-		<LinkTile
-			id="link-tile"
-			to="/subpage"
-			aria-label="My Link Tile Test"
-		>
+		<LinkTile id="link-tile" to="/subpage" aria-label="My Link Tile Test">
 			<h3>Link Tile Test</h3>
 			<ul>
 				<li>
