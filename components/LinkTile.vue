@@ -8,6 +8,7 @@
 		}"
 	>
 		<NuxtLink
+			v-if="to || href"
 			:id="id"
 			ref="linkElementRef"
 			:role="role"
@@ -65,7 +66,7 @@ const props = defineProps({
 	clickableElementsQuery: {
 		type: String,
 		default:
-			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+			'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
 	},
 
 	// For when using RouterLink/NuxtLink/etc.

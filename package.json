@@ -1,8 +1,8 @@
 {
 	"name": "@limbo-works/link-tile",
 	"type": "module",
-	"version": "0.0.1",
-	"main": "./nuxt.config.ts",
+	"version": "0.0.2",
+	"main": "./nuxt.config.js",
 	"scripts": {
 		"dev": "nuxi dev .playground",
 		"build": "nuxt build .playground",
