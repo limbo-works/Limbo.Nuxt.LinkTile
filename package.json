@@ -1,7 +1,7 @@
 {
 	"name": "@limbo-works/link-tile",
 	"type": "module",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"main": "./nuxt.config.js",
 	"scripts": {
 		"dev": "nuxi dev .playground",
@@ -12,7 +12,8 @@
 		"eslint": "eslint \"**/*.{js,vue}\"",
 		"lint": "yarn prettier --check . && yarn eslint --quiet .",
 		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
-		"postinstall": "nuxt prepare .playground"
+		"postinstall": "nuxt prepare .playground",
+		"test": "exit 0"
 	},
 	"devDependencies": {
 		"@limbo-works/lint-configs": "^1.0.0",
