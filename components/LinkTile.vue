@@ -17,11 +17,20 @@
 			v-bind="{
 				href, target, title, tabindex, download,
 				hreflang, ping, referrerpolicy, rel, type,
-				ariaRoledescription, ariaLabel, ariaLabelledby,
-				ariaDetails, ariaDescribedby, ariaControls,
-				ariaCurrent, ariaDisabled, ariaFlowto,
-				ariaHaspopup, ariaKeyshortcuts, ariaLive,
-				ariaOwns, ...customLinkAttrs,
+				'aria-roledescription': ariaRoledescription,
+				'aria-label': ariaLabel,
+				'aria-labelledby': ariaLabelledby,
+				'aria-details': ariaDetails,
+				'aria-describedby': ariaDescribedby,
+				'aria-controls': ariaControls,
+				'aria-current': ariaCurrent,
+				'aria-disabled': ariaDisabled,
+				'aria-flowto': ariaFlowto,
+				'aria-haspopup': ariaHaspopup,
+				'aria-keyshortcuts': ariaKeyshortcuts,
+				'aria-live': ariaLive,
+				'aria-owns': ariaOwns,
+				...customLinkAttrs,
 			}"
 		></NuxtLink>
 		<slot></slot>
@@ -219,11 +228,12 @@ const hoverData = {
 
 // A warning of missing a11y attributes if needed
 if (
+	(props.to || props.href) &&
 	!props.ariaLabel &&
 	!props.ariaLabelledby
 ) {
 	console.warn(
-		'[LinkTile]',
+		`[LinkTile - ${props.id ? '#' + props.id : 'no id'}]`,
 		"No a11y label attributes were provided. This may cause accessibility issues. Add either the 'aria-label' or 'aria-labelledby' attribute to the component, to avoid any issues."
 	);
 }
