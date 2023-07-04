@@ -62,7 +62,7 @@ Internally the component uses `NuxtLink` for the link, allowing for both interna
 
 <span class="colour" style="color: rgb(225, 228, 232);"></span>Following is an example where aria and ids has been used to mark up the tile accessibly, and where only the heading and the "read more" text is made clickable parts of the link. We are also hooking into the hover updates.
 
-```
+```html
 <LinkTile
     id="my-unique-id"
     class="c-my-element group"
