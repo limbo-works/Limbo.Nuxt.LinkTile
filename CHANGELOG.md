@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.1...v1.0.2) (2024-06-26)
+
+
+### Bug Fixes
+
+* some tweaks from citi ([3bfb060](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/3bfb060ebf019810be47ac62d4ef13b14d46f93f))
+
 ## [1.0.1](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.0...v1.0.1) (2024-06-26)
 
 
