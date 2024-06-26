@@ -445,20 +445,22 @@ function getPath(event, _element = null, _path = null) {
 </script>
 
 <style>
-:where(.c-link-tile) {
-	position: relative;
-	display: block;
-}
-
-:where(.c-link-tile__link) {
-	position: absolute;
-	z-index: 99999;
-	display: block;
-	pointer-events: none;
-	inset: 0;
-}
-
-:where(.c-link-tile[data-hover='hover']) {
-	cursor: pointer;
+@layer limbo-package {
+	:where(.c-link-tile) {
+		position: relative;
+		display: block;
+	}
+	
+	:where(.c-link-tile__link) {
+		position: absolute;
+		z-index: 99999;
+		display: block;
+		pointer-events: none;
+		inset: 0;
+	}
+	
+	:where(.c-link-tile[data-hover='hover']) {
+		cursor: pointer;
+	}
 }
 </style>
