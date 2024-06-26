@@ -17,33 +17,16 @@
 			:role="role"
 			class="c-link-tile__link"
 			:to="to"
-			v-bind="{
-				href,
-				target,
-				title,
-				tabindex,
-				download,
-				hreflang,
-				ping,
-				referrerpolicy,
-				rel,
-				type,
-				'aria-roledescription': ariaRoledescription,
-				'aria-label': ariaLabel,
-				'aria-labelledby': ariaLabelledby,
-				'aria-details': ariaDetails,
-				'aria-describedby': ariaDescribedby,
-				'aria-controls': ariaControls,
-				'aria-current': ariaCurrent,
-				'aria-disabled': ariaDisabled,
-				'aria-flowto': ariaFlowto,
-				'aria-haspopup': ariaHaspopup,
-				'aria-keyshortcuts': ariaKeyshortcuts,
-				'aria-live': ariaLive,
-				'aria-owns': ariaOwns,
-				...customLinkAttrs,
-			}"
+			v-bind="linkBindings"
 		></NuxtLink>
+		<button
+			v-else
+			:id="id"
+			ref="linkElementRef"
+			:role="role"
+			class="c-link-tile__link c-link-tile__link--is-button"
+			v-bind="linkBindings"
+		></button>
 		<slot></slot>
 	</div>
 </template>
@@ -238,20 +221,46 @@ const hoverData = {
 };
 
 // A warning of missing a11y attributes if needed
-if ((props.to || props.href) && !props.ariaLabel && !props.ariaLabelledby) {
+if (!props.ariaLabel && !props.ariaLabelledby) {
 	console.warn(
 		`[LinkTile - ${props.id ? '#' + props.id : 'no id'}]`,
-		'No a11y label attributes were provided. This may cause accessibility issues. Add either the \'aria-label\' or \'aria-labelledby\' attribute to the component, to avoid any issues.'
+		"No a11y label attributes were provided. This may cause accessibility issues. Add either the 'aria-label' or 'aria-labelledby' attribute to the component, to avoid any issues."
 	);
 }
 
+const isLink = computed(() => !!props.to || !!props.href);
+
+const linkBindings = computed(() => {
+	return {
+		href: isLink.value ? props.href : null,
+		target: isLink.value ? props.target : null,
+		title: props.title,
+		tabindex: props.tabindex,
+		download: isLink.value ? props.download : null,
+		hreflang: isLink.value ? props.hreflang : null,
+		ping: isLink.value ? props.ping : null,
+		referrerpolicy: isLink.value ? props.referrerpolicy : null,
+		rel: isLink.value ? props.rel : null,
+		type: props.type,
+		'aria-roledescription': props.ariaRoledescription,
+		'aria-label': props.ariaLabel,
+		'aria-labelledby': props.ariaLabelledby,
+		'aria-details': props.ariaDetails,
+		'aria-describedby': props.ariaDescribedby,
+		'aria-controls': props.ariaControls,
+		'aria-current': props.ariaCurrent,
+		'aria-disabled': props.ariaDisabled,
+		'aria-flowto': props.ariaFlowto,
+		'aria-haspopup': props.ariaHaspopup,
+		'aria-keyshortcuts': props.ariaKeyshortcuts,
+		'aria-live': props.ariaLive,
+		'aria-owns': props.ariaOwns,
+		...(props.customLinkAttrs || {}),
+	};
+});
+
 // Methods
 const onClick = (e) => {
-	attrs.onClick?.(e); // Run the usual event, if such is defined
-	if (e.defaultPrevented) {
-		return;
-	}
-
 	const el = wrapperElement.value;
 
 	// Cancel if the actual link is targeted to avoid infinite recursion
@@ -285,6 +294,12 @@ const onClick = (e) => {
 				return;
 			}
 		}
+	}
+
+	// We still only want a custom event to happen if we actually click as per configured
+	attrs.onClick?.(e); // Run the usual event, if such is defined
+	if (e.defaultPrevented) {
+		return;
 	}
 
 	// Click on link - doing it this way, we pass on shift/ctrl/etc. modifiers
