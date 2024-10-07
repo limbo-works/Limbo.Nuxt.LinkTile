@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.2...v1.0.3) (2024-10-07)
+
+
+### Bug Fixes
+
+* added component wrapper ([48ed703](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/48ed70370248d82225d5d5461bc0da42bf577a81))
+
 ## [1.0.2](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.1...v1.0.2) (2024-06-26)
 
 
