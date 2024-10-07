@@ -1,5 +1,6 @@
 <template>
-	<div
+	<Component
+		:is="tag"
 		ref="wrapperElementRef"
 		class="c-link-tile"
 		v-bind="{
@@ -28,7 +29,7 @@
 			v-bind="linkBindings"
 		></button>
 		<slot></slot>
-	</div>
+	</Component>
 </template>
 
 <script setup>
@@ -224,7 +225,7 @@ const hoverData = {
 if (!props.ariaLabel && !props.ariaLabelledby) {
 	console.warn(
 		`[LinkTile - ${props.id ? '#' + props.id : 'no id'}]`,
-		"No a11y label attributes were provided. This may cause accessibility issues. Add either the 'aria-label' or 'aria-labelledby' attribute to the component, to avoid any issues."
+		'No a11y label attributes were provided. This may cause accessibility issues. Add either the \'aria-label\' or \'aria-labelledby\' attribute to the component, to avoid any issues.'
 	);
 }
 
