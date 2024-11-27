@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.3...v1.0.4) (2024-11-27)
+
+
+### Bug Fixes
+
+* allow external value on links ([cf5d67c](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/cf5d67c691ea3d1e2dfb290f1cc3f79816cf32d9))
+
 ## [1.0.3](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.2...v1.0.3) (2024-10-07)
 
 
