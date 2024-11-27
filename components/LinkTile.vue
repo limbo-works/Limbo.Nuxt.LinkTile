@@ -79,6 +79,8 @@ const props = defineProps({
 		default: undefined,
 	},
 
+	external: Boolean,
+
 	// A slew of normal attributes that can be passed to the link
 	id: {
 		type: [String, Number],
@@ -234,6 +236,8 @@ const isLink = computed(() => !!props.to || !!props.href);
 const linkBindings = computed(() => {
 	return {
 		href: isLink.value ? props.href : null,
+		to: isLink.value && !props.href ? props.to : null,
+		external: isLink.value ? props.external : null,
 		target: isLink.value ? props.target : null,
 		title: props.title,
 		tabindex: props.tabindex,
