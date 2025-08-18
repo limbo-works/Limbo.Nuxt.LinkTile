@@ -7,6 +7,7 @@
 			...$attrs,
 			onClick,
 			onMouseup,
+			onMousemove,
 			onMouseover,
 			onMouseleave,
 		}"
@@ -17,6 +18,9 @@
 			ref="linkElementRef"
 			:role="role"
 			class="c-link-tile__link"
+			:class="{
+				'c-link-tile__link--hovered': linkIsHovered,
+			}"
 			:to="to"
 			v-bind="linkBindings"
 		></NuxtLink>
@@ -71,6 +75,11 @@ const props = defineProps({
 		type: String,
 		default:
 			'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+	},
+
+	placeLinkOnTop: {
+		type: Boolean,
+		default: true,
 	},
 
 	// For when using RouterLink/NuxtLink/etc.
@@ -215,6 +224,8 @@ const props = defineProps({
 	},
 });
 
+const linkIsHovered = ref(false);
+
 // Data
 const hoverData = {
 	get linkElement() {
@@ -314,6 +325,33 @@ const onClick = (e) => {
 	// Cancel/stop everything just to be sure
 	e.preventDefault();
 	e.stopPropagation();
+};
+
+const onMousemove = (e) => {
+	if (props.clickableElementsQuery) {
+		let display = 'block';
+		if (linkElement.value) {
+			({ display } = linkElement.value.style);
+			linkElement.value.style.display = 'none';
+		}
+
+		const elementStack = props.placeLinkOnTop ? [...document.elementsFromPoint(e.clientX, e.clientY)] : [];
+		if (linkElement.value) {
+			linkElement.value.style.display = display;
+		}
+
+		if (elementStack.length) {
+			const target = elementStack[0].closest(
+				props.clickableElementsQuery
+			);
+			if (target) {
+				linkIsHovered.value = false;
+				return;
+			}
+		}
+	}
+
+	linkIsHovered.value = true;
 };
 
 const onMouseup = (e) => {
@@ -434,6 +472,8 @@ const onMouseover = (e) => {
 };
 
 const onMouseleave = (e) => {
+	linkIsHovered.value = false;
+
 	attrs.onMouseleave?.(e);
 	if (e.defaultPrevented) {
 		return;
@@ -470,6 +510,9 @@ function getPath(event, _element = null, _path = null) {
 		position: relative;
 		display: block;
 	}
+	.c-link-tile:has(.c-link-tile__link--hovered) {
+		color: red;
+	}
 
 	:where(.c-link-tile__link) {
 		position: absolute;
@@ -477,6 +520,9 @@ function getPath(event, _element = null, _path = null) {
 		display: block;
 		pointer-events: none;
 		inset: 0;
+	}
+	:where(.c-link-tile__link--hovered) {
+		pointer-events: auto;
 	}
 
 	:where(.c-link-tile[data-hover='hover']) {
