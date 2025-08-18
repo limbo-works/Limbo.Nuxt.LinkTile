@@ -77,11 +77,6 @@ const props = defineProps({
 			'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
 	},
 
-	placeLinkOnTop: {
-		type: Boolean,
-		default: true,
-	},
-
 	// For when using RouterLink/NuxtLink/etc.
 	to: {
 		type: [String, Object],
@@ -335,7 +330,7 @@ const onMousemove = (e) => {
 			linkElement.value.style.display = 'none';
 		}
 
-		const elementStack = props.placeLinkOnTop ? [...document.elementsFromPoint(e.clientX, e.clientY)] : [];
+		const elementStack = [...document.elementsFromPoint(e.clientX, e.clientY)];
 		if (linkElement.value) {
 			linkElement.value.style.display = display;
 		}
