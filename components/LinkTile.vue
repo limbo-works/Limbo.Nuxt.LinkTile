@@ -510,9 +510,6 @@ function getPath(event, _element = null, _path = null) {
 		position: relative;
 		display: block;
 	}
-	.c-link-tile:has(.c-link-tile__link--hovered) {
-		color: red;
-	}
 
 	:where(.c-link-tile__link) {
 		position: absolute;
