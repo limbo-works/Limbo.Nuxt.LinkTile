@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.4...v1.1.0) (2025-08-18)
+
+
+### Features
+
+* improved links to allow hover hint ([2b84584](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/2b84584ae8b118dd858cb80420c01bbf7dc6e6c5))
+
+
+### Bug Fixes
+
+* removed hover test ([fda591b](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/fda591ba6f8c38467189be755624516de6a590e2))
+
 ## [1.0.4](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.0.3...v1.0.4) (2024-11-27)
 
 
