@@ -5,10 +5,10 @@
 		<LinkTile
 			id="link-tile"
 			to="/home"
-			link-partials-query="#test"
+			link-partials-query="#testpart"
 			@hoverupdate="test"
 		>
-			<h3 id="test">Back home</h3>
+			<h3 id="testpart">Back home</h3>
 
 			<ul>
 				<li>
@@ -74,3 +74,9 @@ function onHoverupdate(e) {
 	console.log('onHoverupdate', e);
 }
 </script>
+
+<style>
+[data-hover='hover'] * {
+	color: red !important;
+}
+</style>

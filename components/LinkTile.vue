@@ -8,7 +8,6 @@
 			onClick,
 			onMouseup,
 			onMousemove,
-			onMouseover,
 			onMouseleave,
 		}"
 	>
@@ -18,9 +17,6 @@
 			ref="linkElementRef"
 			:role="role"
 			class="c-link-tile__link"
-			:class="{
-				'c-link-tile__link--hovered': linkIsHovered,
-			}"
 			:to="to"
 			v-bind="linkBindings"
 		></NuxtLink>
@@ -219,8 +215,6 @@ const props = defineProps({
 	},
 });
 
-const linkIsHovered = ref(false);
-
 // Data
 const hoverData = {
 	get linkElement() {
@@ -323,30 +317,42 @@ const onClick = (e) => {
 };
 
 const onMousemove = (e) => {
-	if (props.clickableElementsQuery) {
-		let display = 'block';
-		if (linkElement.value) {
-			({ display } = linkElement.value.style);
-			linkElement.value.style.display = 'none';
-		}
+	attrs.onMousemove?.(e);
+	if (e.defaultPrevented) {
+		return;
+	}
 
+	const el = wrapperElement.value;
+	el && runWithoutLink(() => {
 		const elementStack = [...document.elementsFromPoint(e.clientX, e.clientY)];
-		if (linkElement.value) {
-			linkElement.value.style.display = display;
+
+		// Cancel if we're atop a clickable element
+		if (props.clickableElementsQuery) {
+			if (elementStack.length) {
+				const target = elementStack[0].closest(
+					props.clickableElementsQuery
+				);
+				if (target) {
+					setHoverState(false);
+					return;
+				}
+			}
 		}
 
-		if (elementStack.length) {
-			const target = elementStack[0].closest(
-				props.clickableElementsQuery
+		// Cancel if element should not be treated as a link
+		if (props.linkPartialsQuery) {
+			const target = elementStack.find((el) =>
+				el.matches(props.linkPartialsQuery)
 			);
-			if (target) {
-				linkIsHovered.value = false;
+			if (!target) {
+				setHoverState(false);
 				return;
 			}
 		}
-	}
 
-	linkIsHovered.value = true;
+		// Else finally be true
+		setHoverState(true);
+	});
 };
 
 const onMouseup = (e) => {
@@ -399,91 +405,47 @@ const onMouseup = (e) => {
 	}
 };
 
-const onMouseover = (e) => {
-	attrs.onMouseover?.(e);
-	if (e.defaultPrevented) {
-		return;
-	}
-
-	const el = wrapperElement.value;
-	if (el) {
-		// Cancel if an inner button is targeted
-		if (
-			props.clickableElementsQuery &&
-			[...el.querySelectorAll(props.clickableElementsQuery)].includes(
-				e.target
-			)
-		) {
-			el.removeAttribute('data-hover');
-			if (hoverData.isHovering) {
-				hoverData.isHovering = false;
-				attrs.onHoverupdate?.({ ...hoverData });
-				attrs.onHoverend?.({ ...hoverData });
-			}
-			return;
-		}
-
-		// Cancel if element should not be treated as a link
-		if (props.linkPartialsQuery) {
-			const linkPartials = [
-				...el.querySelectorAll(props.linkPartialsQuery),
-			];
-			if (linkPartials.length === 0) {
-				el.removeAttribute('data-hover');
-				if (hoverData.isHovering) {
-					hoverData.isHovering = false;
-					attrs.onHoverupdate?.({ ...hoverData });
-					attrs.onHoverend?.({ ...hoverData });
-				}
-				return;
-			}
-			if (!linkPartials.includes(e.target)) {
-				let isPartial = false;
-				linkPartials.forEach((partial) => {
-					isPartial = getPath(e).includes(partial) ? true : isPartial;
-				});
-
-				if (!isPartial) {
-					el.removeAttribute('data-hover');
-					if (hoverData.isHovering) {
-						hoverData.isHovering = false;
-						attrs.onHoverupdate?.({
-							...hoverData,
-						});
-						attrs.onHoverend?.({ ...hoverData });
-					}
-					return;
-				}
-			}
-		}
-
-		el.setAttribute('data-hover', 'hover');
-		if (!hoverData.isHovering) {
-			hoverData.isHovering = true;
-			attrs.onHoverstart?.({ ...hoverData });
-			attrs.onHoverupdate?.({ ...hoverData });
-		}
-	}
-};
-
 const onMouseleave = (e) => {
-	linkIsHovered.value = false;
-
 	attrs.onMouseleave?.(e);
 	if (e.defaultPrevented) {
 		return;
 	}
 
-	const el = wrapperElement.value;
-	if (el) {
-		el.removeAttribute('data-hover');
-		if (hoverData.isHovering) {
-			hoverData.isHovering = false;
-			attrs.onHoverupdate?.({ ...hoverData });
-			attrs.onHoverend?.({ ...hoverData });
+	setHoverState(false);
+};
+
+function setHoverState(value) {
+	if (hoverData.isHovering !== value) {
+		hoverData.isHovering = value;
+		if (wrapperElement.value) {
+			if (value) {
+				wrapperElement.value.setAttribute('data-hover', 'hover');
+				attrs.onHoverstart?.({ ...hoverData });
+				attrs.onHoverupdate?.({ ...hoverData });
+			} else {
+				wrapperElement.value.removeAttribute('data-hover');
+				attrs.onHoverupdate?.({ ...hoverData });
+				attrs.onHoverend?.({ ...hoverData });
+			}
 		}
 	}
-};
+}
+
+function runWithoutLink(func) {
+	let display = 'block';
+	if (linkElement.value) {
+		({ display } = linkElement.value.style);
+		linkElement.value.style.display = 'none';
+	}
+
+	const _ret = func?.();
+
+	if (linkElement.value) {
+		linkElement.value.style.display = display;
+	}
+
+	return _ret;
+}
 
 function getPath(event, _element = null, _path = null) {
 	const path = _path || event.path || [];
@@ -513,12 +475,12 @@ function getPath(event, _element = null, _path = null) {
 		pointer-events: none;
 		inset: 0;
 	}
-	:where(.c-link-tile__link--hovered) {
-		pointer-events: auto;
-	}
 
 	:where(.c-link-tile[data-hover='hover']) {
 		cursor: pointer;
+	}
+	:where(.c-link-tile[data-hover='hover'] .c-link-tile__link) {
+		pointer-events: auto;
 	}
 }
 </style>
