@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.1.1...v1.1.2) (2025-08-19)
+
+
+### Bug Fixes
+
+* made the change more reliable and removed some redundant code ([edf8a24](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/edf8a24e02cfb708810e9c1daed697c9af562252))
+
 ## [1.1.1](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.1.0...v1.1.1) (2025-08-18)
 
 
