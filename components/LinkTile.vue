@@ -5,7 +5,6 @@
 		class="c-link-tile"
 		v-bind="{
 			...$attrs,
-			onClick,
 			onMouseup,
 			onMousemove,
 			onMouseleave,
@@ -213,6 +212,11 @@ const props = defineProps({
 		type: Object,
 		default: () => ({}),
 	},
+
+	onClick: {
+		type: Function,
+		default: undefined,
+	},
 });
 
 // Data
@@ -260,6 +264,7 @@ const linkBindings = computed(() => {
 		'aria-keyshortcuts': props.ariaKeyshortcuts,
 		'aria-live': props.ariaLive,
 		'aria-owns': props.ariaOwns,
+		onClick,
 		...(props.customLinkAttrs || {}),
 	};
 });
@@ -268,52 +273,58 @@ const linkBindings = computed(() => {
 const onClick = (e) => {
 	const el = wrapperElement.value;
 
-	// Cancel if the actual link is targeted to avoid infinite recursion
-	if (!el || e.target === linkElement.value) {
-		return;
-	}
+	el && runWithoutLink(() => {
+		const elementStack = [...document.elementsFromPoint(e.clientX, e.clientY)];
 
-	// Cancel if an inner button is targeted
-	if (
-		props.clickableElementsQuery &&
+		const target = elementStack?.[0];
+
+		// Cancel if an inner button is targeted
+		if (
+			props.clickableElementsQuery &&
 		[...el.querySelectorAll(props.clickableElementsQuery)].includes(
-			e.target
+			target
 		)
-	) {
-		return;
-	}
-
-	// Cancel if element should not be treated as a link
-	if (props.linkPartialsQuery) {
-		const linkPartials = [...el.querySelectorAll(props.linkPartialsQuery)];
-		if (linkPartials.length === 0) {
+		) {
 			return;
 		}
-		if (!linkPartials.includes(e.target)) {
-			let isPartial = false;
-			linkPartials.forEach((partial) => {
-				isPartial = getPath(e).includes(partial) ? true : isPartial;
-			});
 
-			if (!isPartial) {
+		// Cancel if element should not be treated as a link
+		if (props.linkPartialsQuery) {
+			const linkPartials = [...el.querySelectorAll(props.linkPartialsQuery)];
+			if (linkPartials.length === 0) {
 				return;
 			}
+
+			if (!linkPartials.includes(target)) {
+				let isPartial = false;
+				linkPartials.forEach((partial) => {
+					isPartial = getPath(e).includes(partial) ? true : isPartial;
+				});
+
+				if (!isPartial) {
+					return;
+				}
+			}
 		}
-	}
 
-	// We still only want a custom event to happen if we actually click as per configured
-	attrs.onClick?.(e); // Run the usual event, if such is defined
-	if (e.defaultPrevented) {
-		return;
-	}
+		// We still only want a custom event to happen if we actually click as per configured
+		props.onClick?.(e); // Run the usual event, if such is defined
+		if (e.defaultPrevented) {
+			return;
+		}
 
-	// Click on link - doing it this way, we pass on shift/ctrl/etc. modifiers
-	const event = new MouseEvent('click', e);
-	linkElement.value?.dispatchEvent?.(event);
+		if (e.target === linkElement.value) {
+			return;
+		}
 
-	// Cancel/stop everything just to be sure
-	e.preventDefault();
-	e.stopPropagation();
+		// Click on link - doing it this way, we pass on shift/ctrl/etc. modifiers
+		const event = new MouseEvent('click', e);
+		linkElement.value?.dispatchEvent?.(event);
+
+		// Cancel/stop everything just to be sure
+		e.preventDefault();
+		e.stopPropagation();
+	});
 };
 
 const onMousemove = (e) => {
@@ -474,6 +485,7 @@ function getPath(event, _element = null, _path = null) {
 		display: block;
 		pointer-events: none;
 		inset: 0;
+		opacity: 0;
 	}
 
 	:where(.c-link-tile[data-hover='hover']) {
@@ -481,6 +493,7 @@ function getPath(event, _element = null, _path = null) {
 	}
 	:where(.c-link-tile[data-hover='hover'] .c-link-tile__link) {
 		pointer-events: auto;
+		cursor: pointer;
 	}
 }
 </style>

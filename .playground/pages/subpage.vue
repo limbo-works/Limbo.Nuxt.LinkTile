@@ -4,9 +4,9 @@
 
 		<LinkTile
 			id="link-tile"
-			to="/home"
 			link-partials-query="#testpart"
 			@hoverupdate="test"
+			@click="clickTest"
 		>
 			<h3 id="testpart">Back home</h3>
 
@@ -19,7 +19,7 @@
 				</li>
 			</ul>
 		</LinkTile>
-		<LinkTile>
+		<LinkTile href="/home">
 			<h3 id="test">Back home</h3>
 
 			<ul>
@@ -72,6 +72,10 @@ function test(e) {
 }
 function onHoverupdate(e) {
 	console.log('onHoverupdate', e);
+}
+
+function clickTest(e) {
+	console.log('clickTest', e);
 }
 </script>
 
