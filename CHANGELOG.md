@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.1.2...v1.2.0) (2025-08-28)
+
+
+### Features
+
+* added click event to link and button ([7ec3824](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/7ec382456399ee1b4ec0a06c54c805dc141108d7))
+
 ## [1.1.2](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/v1.1.1...v1.1.2) (2025-08-19)
 
 
