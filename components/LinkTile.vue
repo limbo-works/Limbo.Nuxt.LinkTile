@@ -495,5 +495,11 @@ function getPath(event, _element = null, _path = null) {
 		pointer-events: auto;
 		cursor: pointer;
 	}
+
+	/* Keyboard focus: expose a visible focus ring on the wrapper */
+	:where(.c-link-tile:has(.c-link-tile__link:focus-visible)) {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
 }
 </style>
