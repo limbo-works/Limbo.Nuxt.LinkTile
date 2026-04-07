@@ -139,9 +139,9 @@ Each event includes an object with following data:
 
 ## General notes
 
--   Feature: When the link is hovered – but not any interactive children – `data-hover="hover"` is added to the wrapping element, allowing for hover-styles to be set.
--   Caveat: As the actual link is hidden, you will not have the link shown at the bottom of the browser window.
--   Caveat: Some link-related shortcuts may not work, as it is not the actual link that's being clicked.
+- Feature: When the link is hovered – but not any interactive children – `data-hover="hover"` is added to the wrapping element, allowing for hover-styles to be set.
+- Caveat: As the actual link is hidden, you will not have the link shown at the bottom of the browser window.
+- Caveat: Some link-related shortcuts may not work, as it is not the actual link that's being clicked.
 
 <br>
 <br>

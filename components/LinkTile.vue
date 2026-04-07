@@ -273,58 +273,65 @@ const linkBindings = computed(() => {
 const onClick = (e) => {
 	const el = wrapperElement.value;
 
-	el && runWithoutLink(() => {
-		const elementStack = [...document.elementsFromPoint(e.clientX, e.clientY)];
+	el &&
+		runWithoutLink(() => {
+			const elementStack = [
+				...document.elementsFromPoint(e.clientX, e.clientY),
+			];
 
-		const target = elementStack?.[0];
+			const target = elementStack?.[0];
 
-		// Cancel if an inner button is targeted
-		if (
-			props.clickableElementsQuery &&
-		[...el.querySelectorAll(props.clickableElementsQuery)].includes(
-			target
-		)
-		) {
-			return;
-		}
-
-		// Cancel if element should not be treated as a link
-		if (props.linkPartialsQuery) {
-			const linkPartials = [...el.querySelectorAll(props.linkPartialsQuery)];
-			if (linkPartials.length === 0) {
+			// Cancel if an inner button is targeted
+			if (
+				props.clickableElementsQuery &&
+				[...el.querySelectorAll(props.clickableElementsQuery)].includes(
+					target
+				)
+			) {
 				return;
 			}
 
-			if (!linkPartials.includes(target)) {
-				let isPartial = false;
-				linkPartials.forEach((partial) => {
-					isPartial = getPath(e).includes(partial) ? true : isPartial;
-				});
-
-				if (!isPartial) {
+			// Cancel if element should not be treated as a link
+			if (props.linkPartialsQuery) {
+				const linkPartials = [
+					...el.querySelectorAll(props.linkPartialsQuery),
+				];
+				if (linkPartials.length === 0) {
 					return;
 				}
+
+				if (!linkPartials.includes(target)) {
+					let isPartial = false;
+					linkPartials.forEach((partial) => {
+						isPartial = getPath(e).includes(partial)
+							? true
+							: isPartial;
+					});
+
+					if (!isPartial) {
+						return;
+					}
+				}
 			}
-		}
 
-		// We still only want a custom event to happen if we actually click as per configured
-		props.onClick?.(e); // Run the usual event, if such is defined
-		if (e.defaultPrevented) {
-			return;
-		}
+			// We still only want a custom event to happen if we actually click as per configured
+			props.onClick?.(e); // Run the usual event, if such is defined
+			if (e.defaultPrevented) {
+				return;
+			}
 
-		if (e.target === linkElement.value) {
-			return;
-		}
+			if (e.target === linkElement.value) {
+				return;
+			}
 
-		// Click on link - doing it this way, we pass on shift/ctrl/etc. modifiers
-		const event = new MouseEvent('click', e);
-		linkElement.value?.dispatchEvent?.(event);
+			// Click on link - doing it this way, we pass on shift/ctrl/etc. modifiers
+			const event = new MouseEvent('click', e);
+			linkElement.value?.dispatchEvent?.(event);
 
-		// Cancel/stop everything just to be sure
-		e.preventDefault();
-		e.stopPropagation();
-	});
+			// Cancel/stop everything just to be sure
+			e.preventDefault();
+			e.stopPropagation();
+		});
 };
 
 const onMousemove = (e) => {
@@ -334,36 +341,39 @@ const onMousemove = (e) => {
 	}
 
 	const el = wrapperElement.value;
-	el && runWithoutLink(() => {
-		const elementStack = [...document.elementsFromPoint(e.clientX, e.clientY)];
+	el &&
+		runWithoutLink(() => {
+			const elementStack = [
+				...document.elementsFromPoint(e.clientX, e.clientY),
+			];
 
-		// Cancel if we're atop a clickable element
-		if (props.clickableElementsQuery) {
-			if (elementStack.length) {
-				const target = elementStack[0].closest(
-					props.clickableElementsQuery
+			// Cancel if we're atop a clickable element
+			if (props.clickableElementsQuery) {
+				if (elementStack.length) {
+					const target = elementStack[0].closest(
+						props.clickableElementsQuery
+					);
+					if (target) {
+						setHoverState(false);
+						return;
+					}
+				}
+			}
+
+			// Cancel if element should not be treated as a link
+			if (props.linkPartialsQuery) {
+				const target = elementStack.find((el) =>
+					el.matches(props.linkPartialsQuery)
 				);
-				if (target) {
+				if (!target) {
 					setHoverState(false);
 					return;
 				}
 			}
-		}
 
-		// Cancel if element should not be treated as a link
-		if (props.linkPartialsQuery) {
-			const target = elementStack.find((el) =>
-				el.matches(props.linkPartialsQuery)
-			);
-			if (!target) {
-				setHoverState(false);
-				return;
-			}
-		}
-
-		// Else finally be true
-		setHoverState(true);
-	});
+			// Else finally be true
+			setHoverState(true);
+		});
 };
 
 const onMouseup = (e) => {

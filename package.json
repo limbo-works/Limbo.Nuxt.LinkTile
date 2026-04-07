@@ -2,7 +2,7 @@
 	"name": "@limbo-works/link-tile",
 	"type": "module",
 	"version": "1.2.0",
-	"main": "./nuxt.config.js",
+	"main": "./nuxt.config.ts",
 	"scripts": {
 		"dev": "nuxi dev .playground",
 		"build": "nuxt build .playground",
@@ -15,7 +15,7 @@
 		"test": "exit 0"
 	},
 	"devDependencies": {
-		"@limbo-works/lint-configs": "^1.0.0",
-		"nuxt": "^3.0.0"
+		"@limbo-works/lint-configs": "^2.1.0",
+		"nuxt": "^4"
 	}
 }
