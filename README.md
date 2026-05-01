@@ -56,7 +56,7 @@ Then you can use the `LinkTile` component anywhere within that solution:
 </div>
 ```
 
-Internally the component uses `NuxtLink` for the link, allowing for both internal and external links.
+By default the component uses `NuxtLink` for the link, allowing for both internal and external links. You can change this with the `linkComponent` prop (see [Props overview](#props-overview)).
 
 ### Extended example
 
@@ -113,14 +113,31 @@ Internally the component uses `NuxtLink` for the link, allowing for both interna
 
 ### Props overview
 
-| Prop                                                                                | Description                                                                                          | Default value                                                               | Data type |
-| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------- |
-| tag                                                                                 | The element tag to use for the wrapper.                                                              | 'div'                                                                       | String    |
-| linkPartialsQuery                                                                   | A CSS query pointing at which elements within the link tile to actually treat as the hoverable link. | undefined                                                                   | String    |
-| <span class="colour" style="color:rgb(225, 228, 232)"></span>clickableElementsQuery | A CSS query for filtering all the separately clickable/interactable elements within the link tile.   | 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])' | String    |
-| customLinkAttrs                                                                     | An object of attributes to be added directly on the link element.                                    | {}                                                                          | Object    |
+| Prop                                                                                | Description                                                                                          | Default value                                                               | Data type      |
+| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | -------------- |
+| tag                                                                                 | The element tag to use for the wrapper.                                                              | 'div'                                                                       | String         |
+| linkComponent                                                                       | The component or element to use for the internal link (e.g. `'RouterLink'`, `'a'`, or a component object). | 'NuxtLink'                                                           | String, Object |
+| linkPartialsQuery                                                                   | A CSS query pointing at which elements within the link tile to actually treat as the hoverable link. | undefined                                                                   | String         |
+| <span class="colour" style="color:rgb(225, 228, 232)"></span>clickableElementsQuery | A CSS query for filtering all the separately clickable/interactable elements within the link tile.   | 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])' | String         |
+| customLinkAttrs                                                                     | An object of attributes to be added directly on the link element.                                    | {}                                                                          | Object         |
 
 Further, there is a bunch of attributes that, when used, will be added to the link instead of the wrapper itself. That goes for following: `id`, `to`, `href`, `target`, `title`, `tabindex`, `download`, `hreflang`, `ping`, `referrerpolicy`, `rel`, `type`, `role`, `aria-roledescription`, `aria-label`, `aria-labelledby`, `aria-details`, `aria-describedby`, `aria-controls`, `aria-current`, `aria-disabled`, `aria-flowto`, `aria-haspopup`, `aria-keyshortcuts`, `aria-live` and `aria-owns`, ie. attributes related to links and aria. Further attributes can be added with `customLinkAttrs`.
+
+#### Using an alternative link component
+
+If you are not using Nuxt, or want to use a different router link component, pass the component name or object via `link-component`:
+
+```html
+<!-- Use Vue Router's RouterLink -->
+<LinkTile to="/subpage" aria-label="My Link Tile" link-component="RouterLink">
+    <h3>Link Tile Test</h3>
+</LinkTile>
+
+<!-- Use a plain anchor element -->
+<LinkTile href="https://example.com" aria-label="My Link Tile" link-component="a">
+    <h3>Link Tile Test</h3>
+</LinkTile>
+```
 
 ### Events overview
 

@@ -10,7 +10,8 @@
 			onMouseleave,
 		}"
 	>
-		<NuxtLink
+		<Component
+			:is="linkComponent"
 			v-if="to || href"
 			:id="id"
 			ref="linkElementRef"
@@ -18,7 +19,7 @@
 			class="c-link-tile__link"
 			:to="to"
 			v-bind="linkBindings"
-		></NuxtLink>
+		></Component>
 		<button
 			v-else
 			:id="id"
@@ -57,6 +58,12 @@ const props = defineProps({
 	tag: {
 		type: String,
 		default: 'div',
+	},
+
+	// The component or element to use for the internal link
+	linkComponent: {
+		type: [String, Object],
+		default: 'NuxtLink',
 	},
 
 	// This is to pinpoint specific elements to treat as the link instead of the whole tile
