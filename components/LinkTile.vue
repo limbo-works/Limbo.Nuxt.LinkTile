@@ -53,8 +53,8 @@ defineOptions({
 });
 
 const appConfig = useAppConfig();
-const linkComponent = computed(
-	() => appConfig.linkTile?.linkComponent ?? 'NuxtLink'
+const linkComponent = resolveComponent(
+	appConfig.linkTile?.linkComponent ?? 'NuxtLink'
 );
 
 const attrs = useAttrs();
