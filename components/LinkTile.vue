@@ -33,6 +33,8 @@
 </template>
 
 <script setup>
+import { NuxtLink } from '#app';
+
 const wrapperElementRef = ref(null);
 const linkElementRef = ref(null);
 const wrapperElement = computed(() => {
@@ -53,9 +55,9 @@ defineOptions({
 });
 
 const appConfig = useAppConfig();
-const linkComponent = resolveComponent(
-	appConfig.linkTile?.linkComponent ?? 'NuxtLink'
-);
+const _linkComponentName = appConfig.linkTile?.linkComponent ?? 'NuxtLink';
+const linkComponent =
+	_linkComponentName === 'NuxtLink' ? NuxtLink : resolveComponent(_linkComponentName);
 
 const attrs = useAttrs();
 const props = defineProps({
