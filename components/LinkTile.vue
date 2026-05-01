@@ -10,7 +10,8 @@
 			onMouseleave,
 		}"
 	>
-		<NuxtLink
+		<Component
+			:is="linkComponent"
 			v-if="to || href"
 			:id="id"
 			ref="linkElementRef"
@@ -18,7 +19,7 @@
 			class="c-link-tile__link"
 			:to="to"
 			v-bind="linkBindings"
-		></NuxtLink>
+		></Component>
 		<button
 			v-else
 			:id="id"
@@ -50,6 +51,11 @@ const linkElement = computed(() => {
 defineOptions({
 	inheritAttrs: false,
 });
+
+const appConfig = useAppConfig();
+const linkComponent = computed(
+	() => appConfig.linkTile?.linkComponent ?? 'NuxtLink'
+);
 
 const attrs = useAttrs();
 const props = defineProps({

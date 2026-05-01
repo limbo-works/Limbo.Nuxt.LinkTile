@@ -137,6 +137,21 @@ Each event includes an object with following data:
 | linkElement | A reference to the DOM element for the link.                                         |
 | isHovering  | A `true`/`false` boolean of whether or not the tile is currently being hovered upon. |
 
+## Configuration
+
+The internal link component defaults to `NuxtLink` but can be changed solution-wide via `app.config.ts`:
+
+```ts
+// app.config.ts
+export default defineAppConfig({
+	linkTile: {
+		linkComponent: 'RouterLink', // or 'a', or any globally registered component name
+	},
+});
+```
+
+This setting applies to all `LinkTile` instances in the solution without needing to pass any prop.
+
 ## General notes
 
 - Feature: When the link is hovered – but not any interactive children – `data-hover="hover"` is added to the wrapping element, allowing for hover-styles to be set.
