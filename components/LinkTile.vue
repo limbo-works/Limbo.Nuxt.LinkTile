@@ -320,6 +320,11 @@ const onClick = (e) => {
 				return;
 			}
 
+			onLinkTileClick(e);
+			if (e.defaultPrevented) {
+				return;
+			}
+
 			if (e.target === linkElement.value) {
 				return;
 			}
