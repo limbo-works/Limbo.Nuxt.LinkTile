@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v2.0.0...link-tile-v2.1.0) (2026-05-04)
+
+
+### Features
+
+* added onLinkTileClick ([c2c3b76](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/c2c3b76f1a2e88b185835e0cc71c1e0378418de8))
+
 ## [2.0.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v1.2.0...link-tile-v2.0.0) (2026-04-07)
 
 
