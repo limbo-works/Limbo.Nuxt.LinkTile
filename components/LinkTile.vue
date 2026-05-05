@@ -51,6 +51,8 @@ defineOptions({
 	inheritAttrs: false,
 });
 
+const NuxtLink = getLinkTileLinkComponent();
+
 const attrs = useAttrs();
 const props = defineProps({
 	// The tag of the outer/wrapping element
@@ -215,7 +217,7 @@ const props = defineProps({
 
 	onClick: {
 		type: Function,
-		default: undefined,
+		default: null,
 	},
 });
 
@@ -237,40 +239,10 @@ if (!props.ariaLabel && !props.ariaLabelledby) {
 
 const isLink = computed(() => !!props.to || !!props.href);
 
-const linkBindings = computed(() => {
-	return {
-		href: isLink.value ? props.href : null,
-		to: isLink.value && !props.href ? props.to : null,
-		external: isLink.value ? props.external : null,
-		target: isLink.value ? props.target : null,
-		title: props.title,
-		tabindex: props.tabindex,
-		download: isLink.value ? props.download : null,
-		hreflang: isLink.value ? props.hreflang : null,
-		ping: isLink.value ? props.ping : null,
-		referrerpolicy: isLink.value ? props.referrerpolicy : null,
-		rel: isLink.value ? props.rel : null,
-		type: props.type,
-		'aria-roledescription': props.ariaRoledescription,
-		'aria-label': props.ariaLabel,
-		'aria-labelledby': props.ariaLabelledby,
-		'aria-details': props.ariaDetails,
-		'aria-describedby': props.ariaDescribedby,
-		'aria-controls': props.ariaControls,
-		'aria-current': props.ariaCurrent,
-		'aria-disabled': props.ariaDisabled,
-		'aria-flowto': props.ariaFlowto,
-		'aria-haspopup': props.ariaHaspopup,
-		'aria-keyshortcuts': props.ariaKeyshortcuts,
-		'aria-live': props.ariaLive,
-		'aria-owns': props.ariaOwns,
-		onClick,
-		...(props.customLinkAttrs || {}),
-	};
-});
-
-// Methods
-const onClick = (e) => {
+const onClick = computed(() => (e) => {
+	if (e.defaultPrevented) {
+		return;
+	}
 	const el = wrapperElement.value;
 
 	el &&
@@ -303,7 +275,7 @@ const onClick = (e) => {
 				if (!linkPartials.includes(target)) {
 					let isPartial = false;
 					linkPartials.forEach((partial) => {
-						isPartial = getPath(e).includes(partial)
+						isPartial = partial && (getPath(e).includes(partial) || partial.contains(target))
 							? true
 							: isPartial;
 					});
@@ -320,6 +292,7 @@ const onClick = (e) => {
 				return;
 			}
 
+			// We run any onLinkTileClick handler, if default's aren't prevented
 			onLinkTileClick(e);
 			if (e.defaultPrevented) {
 				return;
@@ -337,8 +310,41 @@ const onClick = (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 		});
-};
+});
 
+const linkBindings = computed(() => {
+	return {
+		href: isLink.value ? props.href : null,
+		to: isLink.value && !props.href ? props.to : null,
+		external: isLink.value ? props.external : null,
+		target: isLink.value ? props.target : null,
+		title: props.title,
+		tabindex: props.tabindex,
+		download: isLink.value ? props.download : null,
+		hreflang: isLink.value ? props.hreflang : null,
+		ping: isLink.value ? props.ping : null,
+		referrerpolicy: isLink.value ? props.referrerpolicy : null,
+		rel: isLink.value ? props.rel : null,
+		type: props.type,
+		'aria-roledescription': props.ariaRoledescription,
+		'aria-label': props.ariaLabel,
+		'aria-labelledby': props.ariaLabelledby,
+		'aria-details': props.ariaDetails,
+		'aria-describedby': props.ariaDescribedby,
+		'aria-controls': props.ariaControls,
+		'aria-current': props.ariaCurrent,
+		'aria-disabled': props.ariaDisabled,
+		'aria-flowto': props.ariaFlowto,
+		'aria-haspopup': props.ariaHaspopup,
+		'aria-keyshortcuts': props.ariaKeyshortcuts,
+		'aria-live': props.ariaLive,
+		'aria-owns': props.ariaOwns,
+		onClick: onClick.value,
+		...(props.customLinkAttrs || {}),
+	};
+});
+
+// Methods
 const onMousemove = (e) => {
 	attrs.onMousemove?.(e);
 	if (e.defaultPrevented) {
