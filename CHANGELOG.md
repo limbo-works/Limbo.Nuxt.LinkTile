@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v2.1.0...link-tile-v2.1.1) (2026-05-05)
+
+
+### Bug Fixes
+
+* added a getLinkTileLinkComponent utility ([33c0dfb](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/33c0dfb0b15124f792e0aeb63c4fea76252b3527))
+
 ## [2.1.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v2.0.0...link-tile-v2.1.0) (2026-05-04)
 
 
