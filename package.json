@@ -3,13 +3,18 @@
 	"type": "module",
 	"version": "3.0.0",
 	"main": "./nuxt.config.ts",
+	"exports": {
+		".": "./nuxt.config.ts",
+		"./web-component": "./web-components/LinkTile.mts",
+		"./*": "./*"
+	},
 	"scripts": {
 		"dev": "nuxi dev .playground",
 		"build": "nuxt build .playground",
 		"generate": "nuxt generate .playground",
 		"preview": "nuxt preview .playground",
-		"prettier": "prettier \"**/*.{ts,mjs,vue,md,yml,css,scss,json}\"",
-		"eslint": "eslint \"**/*.{ts,vue,mjs}\"",
+		"prettier": "prettier \"**/*.{ts,mts,mjs,vue,md,yml,css,scss,json}\"",
+		"eslint": "eslint \"**/*.{ts,mts,vue,mjs}\"",
 		"lint": "yarn prettier --check . && yarn eslint --quiet .",
 		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
 		"test": "exit 0"

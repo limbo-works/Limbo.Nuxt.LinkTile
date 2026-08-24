@@ -4,4 +4,10 @@ export default defineNuxtConfig({
 	app: {
 		pageTransition: { name: 'page', mode: 'out-in' },
 	},
+
+	vue: {
+		compilerOptions: {
+			isCustomElement: (tag) => tag === 'limbo-link-tile',
+		},
+	},
 });

@@ -48,6 +48,33 @@ Rendered DOM shape:
 
 Internally, the component uses NuxtLink, supporting both internal and external navigation.
 
+## Web component usage
+
+For non-Nuxt contexts, import and register the native custom element:
+
+```js
+import { defineLinkTileElement } from '@limbo-works/link-tile/web-component';
+
+defineLinkTileElement();
+```
+
+Then use `<limbo-link-tile>` in your markup:
+
+```html
+<limbo-link-tile href="/subpage" aria-label="My Link Tile Test">
+	<h3>Link Tile Test</h3>
+	<ul>
+		<li><a href="#">Hash</a></li>
+	</ul>
+</limbo-link-tile>
+```
+
+The web component injects the same `.c-link-tile` and `.c-link-tile__link` structure and CSS used by the Vue component. It supports both link mode (`href` or `to`) and button mode (no `href` or `to`).
+
+Use kebab-case attributes for the web component: `link-partials-query`, `clickable-elements-query`, `aria-labelledby`, and the other forwarded link attributes listed below. If you need an ID on the generated overlay link, use `link-id`; the normal `id` attribute belongs to the custom element host.
+
+The web component emits `hoverstart`, `hoverupdate`, `hoverend`, and `linktileclick` custom events. The hover event `detail` matches the Vue event payload shape, and `linktileclick` includes `{ originalEvent, linkElement }`.
+
 ## Extended example
 
 This example uses ARIA IDs for accessible labeling and restricts click/hit-area behavior to selected parts of the tile:

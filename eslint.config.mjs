@@ -5,7 +5,7 @@ import vueParser from 'vue-eslint-parser';
 export default [
 	...config,
 	{
-		files: ['**/*.ts'],
+		files: ['**/*.{ts,mts}'],
 		languageOptions: {
 			parser: tsParser,
 		},
