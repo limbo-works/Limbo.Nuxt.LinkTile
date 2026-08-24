@@ -1,6 +1,6 @@
 # LinkTile
 
-Vue component for link tiles that accessibly allow for much content including links and buttons.
+Vue component for accessible link tiles with rich content, including nested links and controls.
 
 ## Installation
 
@@ -8,61 +8,51 @@ Vue component for link tiles that accessibly allow for much content including li
 yarn add @limbo-works/link-tile
 ```
 
-## Using the wrapper component
+## Setup
 
-Make the component globally usable by extending the layer in `nuxt.config.js`.
+Extend the layer in your Nuxt app:
 
-```js
+```ts
 export default defineNuxtConfig({
-    extends: [
-        '@limbo-works/link-tile',
-        ...
-    ],
-    ...
+	extends: ['@limbo-works/link-tile'],
 });
 ```
 
-Then you can use the `LinkTile` component anywhere within that solution:
+## Basic usage
 
-```html
-<!-- As written in Vue -->
+```vue
 <LinkTile id="link-tile" to="/subpage" aria-label="My Link Tile Test">
-	    
 	<h3>Link Tile Test</h3>
-	    
 	<ul>
-		        
-		<li>            <NuxtLink to="#">Hash</NuxtLink>         </li>
-		    
+		<li><NuxtLink to="#">Hash</NuxtLink></li>
 	</ul>
 </LinkTile>
+```
 
-<!-- As it may appear in the dom -->
+Rendered DOM shape:
+
+```html
 <div class="c-link-tile">
-	    <a
+	<a
 		href="/subpage"
 		class="c-link-tile__link"
 		id="link-tile"
 		aria-label="My Link Tile Test"
 	></a>
-	    
 	<h3>Link Tile Test</h3>
-	    
 	<ul>
-		        
-		<li>            <a href="#">Hash</a>         </li>
-		    
+		<li><a href="#">Hash</a></li>
 	</ul>
 </div>
 ```
 
-Internally the component uses `NuxtLink` for the link, allowing for both internal and external links.
+Internally, the component uses NuxtLink, supporting both internal and external navigation.
 
-### Extended example
+## Extended example
 
-<span class="colour" style="color: rgb(225, 228, 232);"></span>Following is an example where aria and ids has been used to mark up the tile accessibly, and where only the heading and the "read more" text is made clickable parts of the link. We are also hooking into the hover updates.
+This example uses ARIA IDs for accessible labeling and restricts click/hit-area behavior to selected parts of the tile:
 
-```html
+```vue
 <LinkTile
 	id="my-unique-id"
 	class="c-my-element group"
@@ -72,76 +62,72 @@ Internally the component uses `NuxtLink` for the link, allowing for both interna
 	link-partials-query="#my-unique-id__title, #my-unique-id__more"
 	@hoverupdate="onHoverupdate"
 >
-	    <img src="..." alt="A fitting image" />     
+	<img src="..." alt="A fitting image" />
 	<div>
-		        
 		<h3 id="my-unique-id__title" class="group-data-hover:underline">
-			            All the way home         
+			All the way home
 		</h3>
-
-		        
 		<p id="my-unique-id__description">
-			            When you find yourself in the deep, it's nice with a way
-			home.         
+			When you find yourself in the deep, it's nice with a way home.
 		</p>
-
-		        
 		<ul>
-			            
-			<li>
-				                <NuxtLink to="#">Hash</NuxtLink>             
-			</li>
-			            
-			<li>
-				                <NuxtLink to="/home"
-					>Another link home</NuxtLink
-				>
-				            
-			</li>
-			        
+			<li><NuxtLink to="#">Hash</NuxtLink></li>
+			<li><NuxtLink to="/home">Another link home</NuxtLink></li>
 		</ul>
-
-		        <span id="my-unique-id__more">
-			            Read more         </span
-		>
-		    
+		<span id="my-unique-id__more">Read more</span>
 	</div>
 </LinkTile>
 ```
 
-[Limbo.Nuxt.Core](<a href="https://github.com/limbo-works/Limbo.Nuxt.Core">https://github.com/limbo-works/Limbo.Nuxt.Core</a>) automatically adds UnoCSS variants for targetting the `data-hover="hover"` attribute, allowing for classes like the `group-data-hover:underline`. `Limbo.Nuxt.Core` also adds a \`group-focus-within:\` variant, which can be similarly useful with this component.
+Limbo.Nuxt.Core adds UnoCSS variants for data-hover="hover", enabling classes like group-data-hover:underline.
 
-### Props overview
+## Props
 
-| Prop                                                                                | Description                                                                                          | Default value                                                               | Data type |
-| ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------- |
-| tag                                                                                 | The element tag to use for the wrapper.                                                              | 'div'                                                                       | String    |
-| linkPartialsQuery                                                                   | A CSS query pointing at which elements within the link tile to actually treat as the hoverable link. | undefined                                                                   | String    |
-| <span class="colour" style="color:rgb(225, 228, 232)"></span>clickableElementsQuery | A CSS query for filtering all the separately clickable/interactable elements within the link tile.   | 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])' | String    |
-| customLinkAttrs                                                                     | An object of attributes to be added directly on the link element.                                    | {}                                                                          | Object    |
+| Prop                   | Description                                                                      | Default                                                                     | Type                        |
+| ---------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------- |
+| tag                    | Wrapper element tag.                                                             | 'div'                                                                       | string                      |
+| linkPartialsQuery      | CSS selector for elements that should count as link-active areas.                | undefined                                                                   | string                      |
+| clickableElementsQuery | CSS selector for nested interactive elements that should keep native behavior.   | 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])' | string                      |
+| customLinkAttrs        | Extra attributes merged directly into the generated link or button element.      | {}                                                                          | Record<string, unknown>     |
+| onClick                | Optional click hook executed before onLinkTileClick and synthetic link dispatch. | null                                                                        | (event: MouseEvent) => void |
 
-Further, there is a bunch of attributes that, when used, will be added to the link instead of the wrapper itself. That goes for following: `id`, `to`, `href`, `target`, `title`, `tabindex`, `download`, `hreflang`, `ping`, `referrerpolicy`, `rel`, `type`, `role`, `aria-roledescription`, `aria-label`, `aria-labelledby`, `aria-details`, `aria-describedby`, `aria-controls`, `aria-current`, `aria-disabled`, `aria-flowto`, `aria-haspopup`, `aria-keyshortcuts`, `aria-live` and `aria-owns`, ie. attributes related to links and aria. Further attributes can be added with `customLinkAttrs`.
+The following attributes are forwarded to the internal link or button instead of the wrapper:
 
-### Events overview
+id, to, href, external, target, title, tabindex, download, hreflang, ping, referrerpolicy, rel, type, role, aria-roledescription, aria-label, aria-labelledby, aria-details, aria-describedby, aria-controls, aria-current, aria-disabled, aria-flowto, aria-haspopup, aria-keyshortcuts, aria-live, and aria-owns.
 
-| Event        | Description                                                               |
-| ------------ | ------------------------------------------------------------------------- |
-| @hoverstart  | When hovering of the element – but not any interactive children – begins. |
-| @hoverupdate | Whenever the hovering state changes, whether that be beginning or ending. |
-| @hoverend    | When hovering of the element – but not any interactive children – ends.   |
+## Link and button modes
 
-Each event includes an object with following data:
+- Link mode: if either to or href is provided, LinkTile renders a NuxtLink overlay.
+- Button mode: if neither to nor href is provided, LinkTile renders a button overlay so tile interaction still works consistently.
 
-| Property    | Description                                                                          |
-| ----------- | ------------------------------------------------------------------------------------ |
-| linkElement | A reference to the DOM element for the link.                                         |
-| isHovering  | A `true`/`false` boolean of whether or not the tile is currently being hovered upon. |
+## Events
 
-## General notes
+| Event        | Description                                                          |
+| ------------ | -------------------------------------------------------------------- |
+| @hoverstart  | Fires when tile hover starts, excluding nested interactive children. |
+| @hoverupdate | Fires whenever the hover state changes.                              |
+| @hoverend    | Fires when tile hover ends.                                          |
 
-- Feature: When the link is hovered – but not any interactive children – `data-hover="hover"` is added to the wrapping element, allowing for hover-styles to be set.
-- Caveat: As the actual link is hidden, you will not have the link shown at the bottom of the browser window.
-- Caveat: Some link-related shortcuts may not work, as it is not the actual link that's being clicked.
+Each hover event payload includes:
 
-<br>
-<br>
+| Property    | Type                | Description                         |
+| ----------- | ------------------- | ----------------------------------- |
+| linkElement | HTMLElement \| null | Internal overlay element reference. |
+| isHovering  | boolean             | Current hover state.                |
+
+## Click pipeline
+
+When a valid tile click occurs:
+
+1. Your onClick prop callback runs first.
+2. The internal onLinkTileClick utility hook runs next.
+3. If still not prevented, the component dispatches a synthetic click event on the internal overlay link or button.
+
+This ordering lets you intercept, augment, or cancel click behavior predictably.
+
+## Notes
+
+- When the tile is in active hover mode, data-hover="hover" is set on the wrapper element.
+- The component excludes nested interactive elements from tile-level hover and click handling by default.
+- Right mouse button handling temporarily enables pointer events on the internal overlay to improve context-menu behavior.
+- Because navigation is proxied through an overlay element, browser URL preview and some link-specific shortcuts may not always behave exactly like a directly clicked anchor.

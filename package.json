@@ -8,14 +8,16 @@
 		"build": "nuxt build .playground",
 		"generate": "nuxt generate .playground",
 		"preview": "nuxt preview .playground",
-		"prettier": "prettier \"**/*.{js,vue,md,yml,css,scss,json}\"",
-		"eslint": "eslint \"**/*.{js,vue}\"",
+		"prettier": "prettier \"**/*.{ts,mjs,vue,md,yml,css,scss,json}\"",
+		"eslint": "eslint \"**/*.{ts,vue,mjs}\"",
 		"lint": "yarn prettier --check . && yarn eslint --quiet .",
 		"lint:fix": "yarn prettier --write . && yarn eslint --fix --quiet .",
 		"test": "exit 0"
 	},
 	"devDependencies": {
+		"@typescript-eslint/parser": "^8.41.0",
 		"@limbo-works/lint-configs": "^2.1.0",
-		"nuxt": "^4"
+		"nuxt": "^4",
+		"typescript": "^5.6.3"
 	}
 }

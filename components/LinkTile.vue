@@ -12,40 +12,104 @@
 	>
 		<NuxtLink
 			v-if="to || href"
-			:id="id"
+			:id="id != null ? String(id) : undefined"
 			ref="linkElementRef"
 			:role="role"
 			class="c-link-tile__link"
-			:to="to"
 			v-bind="linkBindings"
 		></NuxtLink>
 		<button
 			v-else
-			:id="id"
+			:id="id != null ? String(id) : undefined"
 			ref="linkElementRef"
 			:role="role"
 			class="c-link-tile__link c-link-tile__link--is-button"
-			v-bind="linkBindings"
+			v-bind="linkBindings as any"
 		></button>
 		<slot></slot>
 	</Component>
 </template>
 
-<script setup>
-const wrapperElementRef = ref(null);
-const linkElementRef = ref(null);
-const wrapperElement = computed(() => {
-	if (wrapperElementRef.value && '$el' in wrapperElementRef.value) {
-		return wrapperElementRef.value.$el;
+<script setup lang="ts">
+import type { ComponentPublicInstance } from 'vue';
+import getLinkTileLinkComponent from '../utils/getLinkTileLinkComponent';
+import onLinkTileClick from '../utils/onLinkTileClick';
+
+type LinkLikeTarget = string | Record<string, unknown>;
+type LinkElementRef = HTMLElement | ComponentPublicInstance | null;
+
+interface HoverData {
+	linkElement: HTMLElement | null;
+	isHovering: boolean;
+}
+
+type LinkTileAttrs = Record<string, unknown> & {
+	onMousemove?: Function;
+	onMouseup?: Function;
+	onMouseleave?: Function;
+	onHoverstart?: Function;
+	onHoverupdate?: Function;
+	onHoverend?: Function;
+};
+
+interface LinkTileProps {
+	tag?: string;
+	linkPartialsQuery?: string;
+	clickableElementsQuery?: string;
+	to?: LinkLikeTarget;
+	external?: boolean;
+	id?: string | number;
+	href?: LinkLikeTarget;
+	target?: string;
+	title?: string;
+	tabindex?: string | number;
+	download?: string;
+	hreflang?: string;
+	ping?: string;
+	referrerpolicy?: string;
+	rel?: string;
+	type?: string;
+	role?: string;
+	ariaRoledescription?: string;
+	ariaLabel?: string;
+	ariaLabelledby?: string;
+	ariaDetails?: string;
+	ariaDescribedby?: string;
+	ariaControls?: string;
+	ariaCurrent?: string;
+	ariaDisabled?: string;
+	ariaFlowto?: string;
+	ariaHaspopup?: string;
+	ariaKeyshortcuts?: string;
+	ariaLive?: string;
+	ariaOwns?: string;
+	customLinkAttrs?: Record<string, unknown>;
+	onClick?: Function | null;
+}
+
+type MouseEventWithPath = MouseEvent & {
+	path?: EventTarget[];
+	srcElement?: EventTarget | null;
+};
+
+const wrapperElementRef = ref<LinkElementRef>(null);
+const linkElementRef = ref<LinkElementRef>(null);
+
+function toHtmlElement(element: LinkElementRef): HTMLElement | null {
+	if (!element) {
+		return null;
 	}
-	return wrapperElementRef.value;
-});
-const linkElement = computed(() => {
-	if (linkElementRef.value && '$el' in linkElementRef.value) {
-		return linkElementRef.value.$el;
+
+	if ('$el' in element) {
+		const vueElement = element.$el;
+		return vueElement instanceof HTMLElement ? vueElement : null;
 	}
-	return linkElementRef.value;
-});
+
+	return element instanceof HTMLElement ? element : null;
+}
+
+const wrapperElement = computed(() => toHtmlElement(wrapperElementRef.value));
+const linkElement = computed(() => toHtmlElement(linkElementRef.value));
 
 defineOptions({
 	inheritAttrs: false,
@@ -53,176 +117,17 @@ defineOptions({
 
 const NuxtLink = getLinkTileLinkComponent();
 
-const attrs = useAttrs();
-const props = defineProps({
-	// The tag of the outer/wrapping element
-	tag: {
-		type: String,
-		default: 'div',
-	},
-
-	// This is to pinpoint specific elements to treat as the link instead of the whole tile
-	linkPartialsQuery: {
-		type: String,
-		default: undefined,
-	},
-
-	// This should allow us to click on other buttons, links, etc. "inside the link"
-	clickableElementsQuery: {
-		type: String,
-		default:
-			'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-	},
-
-	// For when using RouterLink/NuxtLink/etc.
-	to: {
-		type: [String, Object],
-		default: undefined,
-	},
-
-	external: Boolean,
-
-	// A slew of normal attributes that can be passed to the link
-	id: {
-		type: [String, Number],
-		default: undefined,
-	},
-
-	href: {
-		type: [String, Object],
-		default: undefined,
-	},
-
-	target: {
-		type: String,
-		default: undefined,
-	},
-
-	title: {
-		type: String,
-		default: undefined,
-	},
-
-	tabindex: {
-		type: [String, Number],
-		default: undefined,
-	},
-
-	download: {
-		type: String,
-		default: undefined,
-	},
-
-	hreflang: {
-		type: String,
-		default: undefined,
-	},
-
-	ping: {
-		type: String,
-		default: undefined,
-	},
-
-	referrerpolicy: {
-		type: String,
-		default: undefined,
-	},
-
-	rel: {
-		type: String,
-		default: undefined,
-	},
-
-	type: {
-		type: String,
-		default: undefined,
-	},
-
-	// A bunch more attributes more closely tied to a11y
-	// a11y: based off of https://www.w3.org/TR/wai-aria-1.1/#link-0
-	role: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaRoledescription: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaLabel: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaLabelledby: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaDetails: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaDescribedby: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaControls: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaCurrent: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaDisabled: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaFlowto: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaHaspopup: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaKeyshortcuts: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaLive: {
-		type: String,
-		default: undefined,
-	},
-
-	ariaOwns: {
-		type: String,
-		default: undefined,
-	},
-
-	customLinkAttrs: {
-		type: Object,
-		default: () => ({}),
-	},
-
-	onClick: {
-		type: Function,
-		default: null,
-	},
+const attrs = useAttrs() as LinkTileAttrs;
+const props = withDefaults(defineProps<LinkTileProps>(), {
+	tag: 'div',
+	clickableElementsQuery:
+		'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+	customLinkAttrs: () => ({}),
+	onClick: null,
 });
 
 // Data
-const hoverData = {
+const hoverData: HoverData = {
 	get linkElement() {
 		return linkElement.value;
 	},
@@ -233,13 +138,13 @@ const hoverData = {
 if (!props.ariaLabel && !props.ariaLabelledby) {
 	console.warn(
 		`[LinkTile - ${props.id ? '#' + props.id : 'no id'}]`,
-		'No a11y label attributes were provided. This may cause accessibility issues. Add either the \'aria-label\' or \'aria-labelledby\' attribute to the component, to avoid any issues.'
+		'No a11y label attributes were provided. This may cause accessibility issues. Add either aria-label or aria-labelledby to the component, to avoid any issues.'
 	);
 }
 
 const isLink = computed(() => !!props.to || !!props.href);
 
-const onClick = computed(() => (e) => {
+const onClick = computed(() => (e: MouseEventWithPath) => {
 	if (e.defaultPrevented) {
 		return;
 	}
@@ -251,7 +156,10 @@ const onClick = computed(() => (e) => {
 				...document.elementsFromPoint(e.clientX, e.clientY),
 			];
 
-			const target = elementStack?.[0];
+			const target = elementStack[0];
+			if (!target) {
+				return;
+			}
 
 			// Cancel if an inner button is targeted
 			if (
@@ -275,9 +183,12 @@ const onClick = computed(() => (e) => {
 				if (!linkPartials.includes(target)) {
 					let isPartial = false;
 					linkPartials.forEach((partial) => {
-						isPartial = partial && (getPath(e).includes(partial) || partial.contains(target))
-							? true
-							: isPartial;
+						isPartial =
+							partial &&
+							(getPath(e).includes(partial) ||
+								(target ? partial.contains(target) : false))
+								? true
+								: isPartial;
 					});
 
 					if (!isPartial) {
@@ -345,7 +256,7 @@ const linkBindings = computed(() => {
 });
 
 // Methods
-const onMousemove = (e) => {
+const onMousemove = (e: MouseEventWithPath) => {
 	attrs.onMousemove?.(e);
 	if (e.defaultPrevented) {
 		return;
@@ -357,11 +268,12 @@ const onMousemove = (e) => {
 			const elementStack = [
 				...document.elementsFromPoint(e.clientX, e.clientY),
 			];
+			const firstElement = elementStack[0];
 
 			// Cancel if we're atop a clickable element
 			if (props.clickableElementsQuery) {
-				if (elementStack.length) {
-					const target = elementStack[0].closest(
+				if (firstElement) {
+					const target = firstElement.closest(
 						props.clickableElementsQuery
 					);
 					if (target) {
@@ -372,9 +284,10 @@ const onMousemove = (e) => {
 			}
 
 			// Cancel if element should not be treated as a link
-			if (props.linkPartialsQuery) {
-				const target = elementStack.find((el) =>
-					el.matches(props.linkPartialsQuery)
+			const partialsQuery = props.linkPartialsQuery;
+			if (partialsQuery) {
+				const target = elementStack.find((element) =>
+					element.matches(partialsQuery)
 				);
 				if (!target) {
 					setHoverState(false);
@@ -387,7 +300,7 @@ const onMousemove = (e) => {
 		});
 };
 
-const onMouseup = (e) => {
+const onMouseup = (e: MouseEventWithPath) => {
 	attrs.onMouseup?.(e); // Run the usual event, if such is defined
 	if (e.defaultPrevented) {
 		return;
@@ -403,6 +316,7 @@ const onMouseup = (e) => {
 	// Cancel if an inner button is targeted
 	if (
 		props.clickableElementsQuery &&
+		e.target instanceof Element &&
 		[...el.querySelectorAll(props.clickableElementsQuery)].includes(
 			e.target
 		)
@@ -416,7 +330,10 @@ const onMouseup = (e) => {
 		if (linkPartials.length === 0) {
 			return;
 		}
-		if (!linkPartials.includes(e.target)) {
+		if (
+			!(e.target instanceof Element) ||
+			!linkPartials.includes(e.target)
+		) {
 			let isPartial = false;
 			linkPartials.forEach((partial) => {
 				isPartial = getPath(e).includes(partial) ? true : isPartial;
@@ -432,12 +349,12 @@ const onMouseup = (e) => {
 	if (linkElement.value && e.button === 2) {
 		linkElement.value.style.pointerEvents = 'auto';
 		window.requestAnimationFrame(() => {
-			linkElement.value.style.pointerEvents = null;
+			linkElement.value?.style.removeProperty('pointer-events');
 		});
 	}
 };
 
-const onMouseleave = (e) => {
+const onMouseleave = (e: MouseEvent) => {
 	attrs.onMouseleave?.(e);
 	if (e.defaultPrevented) {
 		return;
@@ -446,7 +363,7 @@ const onMouseleave = (e) => {
 	setHoverState(false);
 };
 
-function setHoverState(value) {
+function setHoverState(value: boolean) {
 	if (hoverData.isHovering !== value) {
 		hoverData.isHovering = value;
 		if (wrapperElement.value) {
@@ -463,33 +380,49 @@ function setHoverState(value) {
 	}
 }
 
-function runWithoutLink(func) {
+function runWithoutLink<T>(func?: () => T): T | undefined {
 	let display = 'block';
 	if (linkElement.value) {
-		({ display } = linkElement.value.style);
+		display = linkElement.value.style.display || 'block';
 		linkElement.value.style.display = 'none';
 	}
 
-	const _ret = func?.();
+	const ret = func?.();
 
 	if (linkElement.value) {
 		linkElement.value.style.display = display;
 	}
 
-	return _ret;
+	return ret;
 }
 
-function getPath(event, _element = null, _path = null) {
-	const path = _path || event.path || [];
-	let element = _element || event.srcElement;
-
-	if (!event.path && element.parentNode) {
-		path.push(element);
-		element = element.parentNode;
-		return getPath(event, element, path);
+function getPath(
+	event: MouseEventWithPath,
+	element: Node | null = null,
+	path: EventTarget[] = []
+): EventTarget[] {
+	if (event.path?.length) {
+		return event.path;
 	}
 
-	return path;
+	if (typeof event.composedPath === 'function') {
+		const composedPath = event.composedPath();
+		if (composedPath.length) {
+			return composedPath;
+		}
+	}
+
+	const resolvedPath = path;
+	const srcElement =
+		event.srcElement instanceof Node ? event.srcElement : null;
+	let currentElement = element || srcElement || (event.target as Node | null);
+
+	while (currentElement) {
+		resolvedPath.push(currentElement);
+		currentElement = currentElement.parentNode;
+	}
+
+	return resolvedPath;
 }
 </script>
 
