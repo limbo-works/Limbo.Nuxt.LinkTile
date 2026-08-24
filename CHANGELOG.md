@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v2.1.1...link-tile-v3.0.0) (2026-08-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* updated to use typescript
+
+### Features
+
+* updated to use typescript ([53a8608](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/53a860883276907139a9cd7494b7bffff09c6d98))
+
 ## [2.1.1](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v2.1.0...link-tile-v2.1.1) (2026-05-05)
 
 ### Bug Fixes
