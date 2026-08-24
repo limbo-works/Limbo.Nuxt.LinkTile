@@ -86,10 +86,26 @@ Limbo.Nuxt.Core adds UnoCSS variants for data-hover="hover", enabling classes li
 | Prop                   | Description                                                                      | Default                                                                     | Type                        |
 | ---------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------- |
 | tag                    | Wrapper element tag.                                                             | 'div'                                                                       | string                      |
+| useShadowDom           | Render the internal overlay in a declarative shadow DOM.                         | false                                                                       | boolean                     |
 | linkPartialsQuery      | CSS selector for elements that should count as link-active areas.                | undefined                                                                   | string                      |
 | clickableElementsQuery | CSS selector for nested interactive elements that should keep native behavior.   | 'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])' | string                      |
 | customLinkAttrs        | Extra attributes merged directly into the generated link or button element.      | {}                                                                          | Record<string, unknown>     |
 | onClick                | Optional click hook executed before onLinkTileClick and synthetic link dispatch. | null                                                                        | (event: MouseEvent) => void |
+
+When `use-shadow-dom` is enabled, the internal overlay is rendered in a declarative shadow root and the tile content is projected through a native slot:
+
+```html
+<div class="c-link-tile">
+	<template shadowrootmode="open">
+		<style>
+			/* Internal LinkTile styles */
+		</style>
+		<a href="/subpage" class="c-link-tile__link" id="link-tile"></a>
+		<slot></slot>
+	</template>
+	<h3>Link Tile Test</h3>
+</div>
+```
 
 The following attributes are forwarded to the internal link or button instead of the wrapper:
 
