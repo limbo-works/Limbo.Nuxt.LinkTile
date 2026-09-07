@@ -2,6 +2,7 @@
 	<Component
 		:is="tag"
 		ref="wrapperElementRef"
+		:role="role"
 		class="c-link-tile"
 		v-bind="{
 			...$attrs,
@@ -154,6 +155,8 @@ const router = useRouter();
 const attrs = useAttrs() as LinkTileAttrs;
 const props = withDefaults(defineProps<LinkTileProps>(), {
 	tag: 'div',
+	disabled: false,
+	labelWrapper: false,
 	clickableElementsQuery:
 		'button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
 	customLinkAttrs: () => ({}),
@@ -198,15 +201,32 @@ const hoverData: HoverData = {
 	isHovering: false,
 };
 
+const isLink = computed(() => !props.disabled && (!!props.to || !!props.href));
+const hasClickAction = computed(
+	() => !props.disabled && typeof props.onClick === 'function'
+);
+const isInteractive = computed(() => isLink.value || hasClickAction.value);
+
+// Regions (role="region", article, section, etc.) need their own accessible name
+const wrapperLabelBindings = computed(() => {
+	if (!props.labelWrapper) {
+		return {};
+	}
+
+	return {
+		'aria-label': props.ariaLabel,
+		'aria-labelledby': props.ariaLabelledby,
+		'aria-describedby': props.ariaDescribedby,
+	};
+});
+
 // A warning of missing a11y attributes if needed
-if (!props.ariaLabel && !props.ariaLabelledby) {
+if (isInteractive.value && !props.ariaLabel && !props.ariaLabelledby) {
 	console.warn(
 		`[LinkTile - ${props.id ? '#' + props.id : 'no id'}]`,
 		'No a11y label attributes were provided. This may cause accessibility issues. Add either aria-label or aria-labelledby to the component, to avoid any issues.'
 	);
 }
-
-const isLink = computed(() => !!props.to || !!props.href);
 
 if (import.meta.client) {
 	watchPostEffect(() => {
@@ -349,7 +369,7 @@ const linkBindings = computed(() => {
 		ping: isLink.value ? props.ping : null,
 		referrerpolicy: isLink.value ? props.referrerpolicy : null,
 		rel: isLink.value ? props.rel : null,
-		type: props.type,
+		type: isLink.value ? props.type : (props.type ?? 'button'),
 		'aria-roledescription': props.ariaRoledescription,
 		'aria-label': props.ariaLabel,
 		'aria-labelledby': props.ariaLabelledby,
@@ -558,7 +578,7 @@ function getShadowLinkHref() {
 // Methods
 const onMousemove = (e: MouseEventWithPath) => {
 	attrs.onMousemove?.(e);
-	if (e.defaultPrevented) {
+	if (!isInteractive.value || e.defaultPrevented) {
 		return;
 	}
 
@@ -602,7 +622,7 @@ const onMousemove = (e: MouseEventWithPath) => {
 
 const onMouseup = (e: MouseEventWithPath) => {
 	attrs.onMouseup?.(e); // Run the usual event, if such is defined
-	if (e.defaultPrevented) {
+	if (!isInteractive.value || e.defaultPrevented) {
 		return;
 	}
 
@@ -656,7 +676,7 @@ const onMouseup = (e: MouseEventWithPath) => {
 
 const onMouseleave = (e: MouseEvent) => {
 	attrs.onMouseleave?.(e);
-	if (e.defaultPrevented) {
+	if (!isInteractive.value || e.defaultPrevented) {
 		return;
 	}
 
