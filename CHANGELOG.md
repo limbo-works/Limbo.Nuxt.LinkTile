@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v3.0.0...link-tile-v3.1.0) (2026-09-07)
+
+
+### Features
+
+* improved the handling ([5ef5f93](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/commit/5ef5f93843c8c52c0cc99b3becc9c00bca9d34d4))
+
 ## [3.0.0](https://github.com/limbo-works/Limbo.Nuxt.LinkTile/compare/link-tile-v2.1.1...link-tile-v3.0.0) (2026-08-24)
 
 
